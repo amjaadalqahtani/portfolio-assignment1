@@ -1,0 +1,124 @@
+---
+output: html_document
+---
+
+---
+title: "Meditation Dataset Analysis"
+author: "Amjad Alqahtani"
+date: "03/10/2021"
+output: html_document
+---
+
+# Portfolio Assignment I
+
+### Meditation Dataset Analysis
+
+------------------------------------------------------------------------
+
+**Goals:** - Describe the dataset - Analyze the relationship between meditation and gene expression - Use plots to illustrate
+
+**Dataset Description:** This dataset is extracted from an experiment exploring the effect of meditation on specific gene expression. It has been hypothesized that mindulness meditation could alter biochemical processes within the body. The goal of this experiment was to measure the validity of this statement.
+
+**Exploring the Dataset**
+
+There are multiple methods to use when exploring datasets in R. But before that, we must set the environment by installing the necessary packages. One of which, is the tidyverse package, it is one of the main packages that make working with data easier and more intuitive.
+
+To initiate tidyverse, execute
+
+    library(tidyverse)
+
+    > library(tidyverse) -- Attaching packages --------------------------------------- tidyverse 1.3.1 -- v ggplot2 3.3.5 v purrr 0.3.4 v tibble 3.1.4 v dplyr 1.0.7 v tidyr 1.1.4 v stringr 1.4.0 v readr 2.0.2 v forcats 0.5.1 -- Conflicts ------------------------------------------ tidyverse_conflicts() -- x dplyr::filter() masks stats::filter() x dplyr::lag() masks stats::lag()
+
+One method to gain an overview of the dataset, is the glimpse function. To execute the glimpse() function
+
+    glimpse(Expression)
+
+this gives us an idea of the dataset composition.
+
+    > glimpse(Expression)
+    Rows: 21
+    Columns: 24
+    $ Control_RIPK2_1    <dbl> 0.70, 0.39, 1.22, 1.78, 0.59, 1.47, 1.66, 0.76, 1.4~
+    $ Control_RIPK2_2    <dbl> 1.43, 1.82, 0.59, 0.47, 1.03, 1.60, 1.48, 1.67, 0.7~
+    $ Meditation_RIPK2_1 <dbl> 1.05, 1.69, 1.22, 1.59, 1.20, 1.99, 0.95, 0.53, 1.3~
+    $ Meditation_RIPK2_2 <dbl> 0.90, 1.02, 0.41, 0.88, 1.67, 1.82, 1.03, 1.20, 0.8~
+    $ Control_COX2_1     <dbl> -0.08, 2.25, 1.10, 2.71, 1.95, 0.81, -0.17, 1.35, 1~
+    $ Control_COX2_2     <dbl> 1.62, 1.01, 1.21, 1.68, 0.45, -0.04, 0.95, 0.80, 0.~
+    $ Meditation_COX2_1  <dbl> 4.07, 2.33, 0.97, 0.27, 1.58, 1.32, 0.50, -0.46, 1.~
+    $ Meditation_COX2_2  <dbl> -0.65, 0.12, 1.21, -0.02, 0.87, 0.49, 0.91, 0.62, 1~
+    $ Control_CCR7_1     <dbl> 2.89, 1.44, 1.64, 1.91, 1.65, 1.05, 1.24, 0.73, 1.1~
+    $ Control_CCR7_2     <dbl> 1.50, 0.48, 1.88, 1.86, 0.91, 1.49, 1.34, 1.10, 1.5~
+    $ Meditation_CCR7_1  <dbl> 1.50, 0.88, 0.71, 0.86, 1.12, 1.49, 1.94, 1.11, 0.5~
+    $ Meditation_CCR7_2  <dbl> 0.64, 0.13, 1.75, 0.26, 1.99, -0.02, 1.50, 0.28, 0.~
+    $ Control_CXCR1_1    <dbl> 1.87, 0.27, 1.45, 2.11, 1.31, 1.35, 1.32, -0.11, 0.~
+    $ Control_CXCR1_2    <dbl> 1.30, 1.16, 1.40, 1.24, 1.67, 2.75, 1.33, 0.80, 1.0~
+    $ Meditation_CXCR1_1 <dbl> 1.01, 0.08, 1.25, 1.87, 1.78, 1.17, 1.14, 1.49, 0.2~
+    $ Meditation_CXCR1_2 <dbl> 1.54, 2.21, 2.05, 1.15, 0.63, 0.62, 0.49, 1.98, 1.5~
+    $ Control_IL.6_1     <dbl> -0.20, 1.39, 0.15, 1.48, 0.70, 1.07, 2.47, 0.40, 2.~
+    $ Control_IL.6_2     <dbl> 2.44, 0.87, 0.31, 1.75, 1.07, 0.10, 2.80, 1.64, 0.2~
+    $ Meditation_IL.6_1  <dbl> 1.41, 2.73, 0.39, 1.08, 0.47, 0.49, 2.36, 2.47, 1.9~
+    $ Meditation_IL.6_2  <dbl> 1.79, 0.91, 0.78, 0.01, 0.67, 0.16, 1.84, 1.33, 0.6~
+    $ Control_TNF_1      <dbl> 1.66, 1.83, 1.18, 0.70, 0.65, 0.76, 0.97, 1.08, 1.1~
+    $ Control_TNF_2      <dbl> 1.27, 1.17, 1.84, 1.07, 1.26, 2.12, 1.38, 1.25, 0.5~
+    $ Meditation_TNF_1   <dbl> 1.14, 1.04, 0.55, 1.06, 1.22, 0.20, 0.75, 1.14, 0.6~
+    $ Meditation_TNF_2   <dbl> 1.06, 0.50, 1.08, 1.57, 0.73, 1.73, 2.42, 1.89, -0.~
+
+We can see that the dataset contains 21 rows and 24 columns, and each column denotes a specific gene divided into an intervention and a control group. We also see that the type of variables is "<dbl>", or "double", meaning that the data type is numeric. In general computing language, numerical vectors are referred to as double.
+
+Another method to explore the data is to summarize the statistics using the summary() function
+
+    summary(Expression)
+
+    > summary(Expression)
+     Control_RIPK2_1  Control_RIPK2_2 Meditation_RIPK2_1 Meditation_RIPK2_2
+     Min.   :-0.030   Min.   :0.080   Min.   :-0.270     Min.   :0.1500    
+     1st Qu.: 0.670   1st Qu.:0.760   1st Qu.: 0.975     1st Qu.:0.8650    
+     Median : 1.110   Median :1.190   Median : 1.265     Median :0.9700    
+     Mean   : 1.064   Mean   :1.059   Mean   : 1.274     Mean   :0.9661    
+     3rd Qu.: 1.470   3rd Qu.:1.320   3rd Qu.: 1.685     3rd Qu.:1.1775    
+     Max.   : 1.890   Max.   :1.820   Max.   : 2.340     Max.   :1.8200    
+                                      NA's   :3          NA's   :3         
+     Control_COX2_1   Control_COX2_2    Meditation_COX2_1 Meditation_COX2_2
+     Min.   :-0.250   Min.   :-0.0400   Min.   :-0.460    Min.   :-0.6500  
+     1st Qu.: 0.810   1st Qu.: 0.6500   1st Qu.: 0.735    1st Qu.: 0.2750  
+     Median : 1.340   Median : 0.9500   Median : 1.580    Median : 0.4900  
+     Mean   : 1.331   Mean   : 0.9624   Mean   : 1.502    Mean   : 0.6137  
+     3rd Qu.: 1.950   3rd Qu.: 1.3500   3rd Qu.: 2.230    3rd Qu.: 0.9200  
+     Max.   : 2.970   Max.   : 1.8600   Max.   : 4.070    Max.   : 1.6800  
+                                        NA's   :2         NA's   :2        
+     Control_CCR7_1  Control_CCR7_2  Meditation_CCR7_1 Meditation_CCR7_2
+     Min.   :0.340   Min.   :0.210   Min.   :0.260     Min.   :-0.020   
+     1st Qu.:1.050   1st Qu.:0.710   1st Qu.:0.750     1st Qu.: 0.690   
+     Median :1.350   Median :1.100   Median :1.110     Median : 0.850   
+     Mean   :1.406   Mean   :1.123   Mean   :1.139     Mean   : 1.044   
+     3rd Qu.:1.820   3rd Qu.:1.500   3rd Qu.:1.495     3rd Qu.: 1.595   
+     Max.   :2.890   Max.   :1.880   Max.   :2.280     Max.   : 1.990   
+                                     NA's   :2         NA's   :2        
+     Control_CXCR1_1  Control_CXCR1_2  Meditation_CXCR1_1 Meditation_CXCR1_2
+     Min.   :-0.110   Min.   :-0.040   Min.   :-0.250     Min.   :0.310     
+     1st Qu.: 0.690   1st Qu.: 0.925   1st Qu.: 0.665     1st Qu.:0.770     
+     Median : 1.070   Median : 1.230   Median : 1.160     Median :1.540     
+     Mean   : 1.139   Mean   : 1.171   Mean   : 1.117     Mean   :1.311     
+     3rd Qu.: 1.400   3rd Qu.: 1.335   3rd Qu.: 1.635     3rd Qu.:1.760     
+     Max.   : 2.490   Max.   : 2.750   Max.   : 2.150     Max.   :2.210     
+     NA's   :2        NA's   :2        NA's   :2          NA's   :2         
+     Control_IL.6_1    Control_IL.6_2   Meditation_IL.6_1 Meditation_IL.6_2
+     Min.   :-0.9800   Min.   :-0.130   Min.   :-0.770    Min.   :0.010    
+     1st Qu.: 0.4000   1st Qu.: 0.320   1st Qu.: 0.480    1st Qu.:0.325    
+     Median : 0.7000   Median : 0.910   Median : 1.380    Median :0.670    
+     Mean   : 0.8886   Mean   : 1.075   Mean   : 1.211    Mean   :0.870    
+     3rd Qu.: 1.4800   3rd Qu.: 1.640   3rd Qu.: 1.950    3rd Qu.:1.440    
+     Max.   : 2.4700   Max.   : 2.800   Max.   : 2.730    Max.   :2.060    
+                                        NA's   :2         NA's   :2        
+     Control_TNF_1   Control_TNF_2   Meditation_TNF_1 Meditation_TNF_2 
+     Min.   :0.430   Min.   :0.230   Min.   :0.2000   Min.   :-0.4900  
+     1st Qu.:0.760   1st Qu.:1.070   1st Qu.:0.6100   1st Qu.: 0.5900  
+     Median :1.010   Median :1.270   Median :1.0400   Median : 0.7900  
+     Mean   :1.122   Mean   :1.303   Mean   :0.9247   Mean   : 0.9742  
+     3rd Qu.:1.500   3rd Qu.:1.570   3rd Qu.:1.1800   3rd Qu.: 1.4200  
+     Max.   :2.320   Max.   :2.120   Max.   :1.8000   Max.   : 2.4200  
+                                     NA's   :2        NA's   :2        
+
+It created a summary of the data including the mean, median, IQR for each column.
+
+Note this dataset does not follow the structure of tidy data, where each column has one variable, each row has one observation, and the dataframe has one observational unit.
